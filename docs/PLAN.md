@@ -3,8 +3,9 @@ PLAN: "feat: agentmemory — MemoryStore over orm+ddl (SQL) and vectordb (semant
 TAG: v0.1.0
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 8513538180190184454
+PR: https://github.com/webtyp/agentmemory/pull/1
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.
