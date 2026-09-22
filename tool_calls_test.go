@@ -56,7 +56,8 @@ func TestToolCalls_Malformed(t *testing.T) {
 		"invalid",
 		"100:short,",
 		"abc:123,",
-		"5:hello", // missing trailing comma
+		"5:hello",                 // missing trailing comma
+		"99999999999999999999:x,", // length prefix overflows int well before it could ever be a valid offset
 	}
 	for _, in := range malformedInputs {
 		_, err := decodeToolCalls(in)

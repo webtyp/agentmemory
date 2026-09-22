@@ -27,28 +27,56 @@ func (s *Store) SaveKnowledge(ctx *context.Context, sessionID, content, source s
 	return nil
 }
 
+// knowledgeMatch pairs a vectordb.Match with the SessionID it should be reported under —
+// "" for a global-tag match, sessionID for a session-tag match. vectordb.Match itself has
+// no notion of which of our two tag searches produced it, so this has to be recorded before
+// the two result sets are merged, not derived after.
+type knowledgeMatch struct {
+	match     vectordb.Match
+	sessionID string
+}
+
 func (s *Store) SearchKnowledge(ctx *context.Context, query, sessionID string, limit int) ([]agent.Knowledge, error) {
-	globalMatches, err := s.vdb.Search(ctx, vectordb.Query{Text: query, K: limit, IncludeTags: []string{tagGlobal}})
+	// limit<=0 means "unbounded" (agent.NewMemMemory's contract, which every other method
+	// in this package already follows) — vectordb.Query.K has no such convention (K<=0
+	// falls back to its own default of 4), so approximate "everything" with the corpus
+	// size when the caller didn't ask for a specific cap.
+	k := limit
+	if k <= 0 {
+		if k = s.vdb.Len(); k <= 0 {
+			k = 1
+		}
+	}
+
+	globalRaw, err := s.vdb.Search(ctx, vectordb.Query{Text: query, K: k, IncludeTags: []string{tagGlobal}})
 	if err != nil {
 		return nil, fmt.Err("agentmemory: SearchKnowledge (global): ", err)
 	}
+	globalMatches := make([]knowledgeMatch, len(globalRaw))
+	for i, m := range globalRaw {
+		globalMatches[i] = knowledgeMatch{match: m, sessionID: ""}
+	}
 
-	var sessionMatches []vectordb.Match
+	var sessionMatches []knowledgeMatch
 	if sessionID != "" {
-		sessionMatches, err = s.vdb.Search(ctx, vectordb.Query{Text: query, K: limit, IncludeTags: []string{sessionTagPrefix + sessionID}})
+		sessionRaw, err := s.vdb.Search(ctx, vectordb.Query{Text: query, K: k, IncludeTags: []string{sessionTagPrefix + sessionID}})
 		if err != nil {
 			return nil, fmt.Err("agentmemory: SearchKnowledge (session): ", err)
+		}
+		sessionMatches = make([]knowledgeMatch, len(sessionRaw))
+		for i, m := range sessionRaw {
+			sessionMatches[i] = knowledgeMatch{match: m, sessionID: sessionID}
 		}
 	}
 
 	merged := mergeMatchesByScore(globalMatches, sessionMatches, limit)
 	out := make([]agent.Knowledge, len(merged))
-	for i, m := range merged {
-		src, createdAt := parseKnowledgeMeta(m.Meta)
+	for i, km := range merged {
+		src, createdAt := parseKnowledgeMeta(km.match.Meta)
 		out[i] = agent.Knowledge{
-			ID:        m.ID,
-			SessionID: sessionID,
-			Content:   m.Text,
+			ID:        km.match.ID,
+			SessionID: km.sessionID,
+			Content:   km.match.Text,
 			Source:    src,
 			CreatedAt: createdAt,
 		}
@@ -56,12 +84,12 @@ func (s *Store) SearchKnowledge(ctx *context.Context, query, sessionID string, l
 	return out, nil
 }
 
-func mergeMatchesByScore(a, b []vectordb.Match, limit int) []vectordb.Match {
-	combined := make([]vectordb.Match, 0, len(a)+len(b))
+func mergeMatchesByScore(a, b []knowledgeMatch, limit int) []knowledgeMatch {
+	combined := make([]knowledgeMatch, 0, len(a)+len(b))
 	combined = append(combined, a...)
 	combined = append(combined, b...)
 	sort.SliceStable(combined, func(i, j int) bool {
-		return combined[i].Score > combined[j].Score
+		return combined[i].match.Score > combined[j].match.Score
 	})
 	if limit > 0 && len(combined) > limit {
 		return combined[:limit]

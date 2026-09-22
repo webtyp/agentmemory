@@ -27,6 +27,7 @@ func (s *Store) GetEpisodes(ctx *context.Context, sessionID string, limit int) (
 	err := s.db.Query(&Episode{}).
 		Where(Episode_.SessionId).Eq(sessionID).
 		OrderBy(Episode_.CreatedAt).Desc().
+		OrderBy(Episode_.Id).Desc().
 		Limit(limit).
 		ReadAll(func() model.Model { return &Episode{} }, func(m model.Model) { rows = append(rows, m.(*Episode)) })
 	if err != nil {

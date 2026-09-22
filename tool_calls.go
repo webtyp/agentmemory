@@ -64,6 +64,11 @@ func readField(s string, i int) (string, int, error) {
 	n := 0
 	for _, d := range []byte(s[i:digitsEnd]) {
 		n = n*10 + int(d-'0')
+		// A legitimate length prefix can never exceed the remaining input — bail out here,
+		// long before accumulating enough digits to overflow int (~10 nines).
+		if n > len(s) {
+			return "", 0, fmt.Err("agentmemory: field length exceeds remaining input at offset ", i)
+		}
 	}
 	if digitsEnd >= len(s) || s[digitsEnd] != ':' {
 		return "", 0, fmt.Err("agentmemory: expected ':' after length at offset ", digitsEnd)
