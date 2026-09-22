@@ -30,6 +30,7 @@ func (s *Store) GetToolLogs(ctx *context.Context, sessionID, toolName string, li
 		qb = qb.Where(ToolLog_.ToolName).Eq(toolName)
 	}
 	err := qb.OrderBy(ToolLog_.CreatedAt).Desc().
+		OrderBy(ToolLog_.Id).Desc().
 		Limit(limit).
 		ReadAll(func() model.Model { return &ToolLog{} }, func(m model.Model) { rows = append(rows, m.(*ToolLog)) })
 	if err != nil {

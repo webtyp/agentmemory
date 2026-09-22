@@ -41,6 +41,7 @@ func (s *Store) GetMessages(ctx *context.Context, sessionID string, limit int) (
 	err := s.db.Query(&Message{}).
 		Where(Message_.SessionId).Eq(sessionID).
 		OrderBy(Message_.CreatedAt).Desc().
+		OrderBy(Message_.Id).Desc().
 		Limit(limit).
 		ReadAll(func() model.Model { return &Message{} }, func(m model.Model) { rows = append(rows, m.(*Message)) })
 	if err != nil {
