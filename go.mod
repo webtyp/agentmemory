@@ -21,7 +21,7 @@ require (
 	webtyp.com/fetch v0.1.28 // indirect
 	webtyp.com/json v0.5.25 // indirect
 	webtyp.com/mcp v0.2.34 // indirect
-	webtyp.com/router v0.1.41 // indirect
+	webtyp.com/router v0.1.42 // indirect
 	webtyp.com/tokenizer v0.2.0 // indirect
 	webtyp.com/transformer v0.1.4 // indirect
 	webtyp.com/vector v0.1.1 // indirect
