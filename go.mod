@@ -20,7 +20,7 @@ require (
 	webtyp.com/base64 v0.0.6 // indirect
 	webtyp.com/fetch v0.1.28 // indirect
 	webtyp.com/json v0.5.25 // indirect
-	webtyp.com/mcp v0.2.32 // indirect
+	webtyp.com/mcp v0.2.34 // indirect
 	webtyp.com/router v0.1.41 // indirect
 	webtyp.com/vector v0.1.0 // indirect
 )
