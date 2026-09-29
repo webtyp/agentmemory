@@ -11,7 +11,7 @@ require (
 	webtyp.com/model v0.2.0
 	webtyp.com/orm v0.12.6
 	webtyp.com/storage v0.1.1
-	webtyp.com/time v0.5.6
+	webtyp.com/time v0.5.7
 	webtyp.com/unixid v0.2.28
 	webtyp.com/vectordb v0.2.4
 )
