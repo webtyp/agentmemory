@@ -1,10 +1,12 @@
-package agentmemory
+package tests
 
 import (
 	"testing"
 
 	"webtyp.com/agent"
 	"webtyp.com/agent/conformance"
+	"webtyp.com/agentcontext"
+	"webtyp.com/agentmemory"
 	"webtyp.com/context"
 	"webtyp.com/ddl"
 	"webtyp.com/embed"
@@ -13,13 +15,6 @@ import (
 	"webtyp.com/unixid"
 )
 
-// mockDDLCompiler stands in for a real dialect (sqlt, postgres) so this repo's tests never
-// import one directly — AGENTS.md: "Do not import webtyp.com/indexdb, webtyp.com/sqlt or
-// webtyp.com/postgres directly." mem.Conn ignores the compiled SQL entirely (it
-// auto-vivifies tables on first Create), so Migrate against mem was never going to validate
-// real dialect SQL either way — this at least confirms Migrate reaches CompileDDL for every
-// table it owns, which the previous sqlt+mem pairing didn't actually prove despite looking
-// like it did. Pattern copied from webtyp/ddl's own ddl_test.go:mockDDLCompiler.
 type mockDDLCompiler struct {
 	Stmts []ddl.Stmt
 }
@@ -35,7 +30,7 @@ func TestAgentMemoryConformance(t *testing.T) {
 		New: func(t *testing.T) agent.MemoryStore {
 			ctx := context.Background()
 			conn := mem.New()
-			err := Migrate(conn, &mockDDLCompiler{})
+			err := agentmemory.Migrate(conn, &mockDDLCompiler{})
 			if err != nil {
 				t.Fatalf("Migrate failed: %v", err)
 			}
@@ -43,7 +38,7 @@ func TestAgentMemoryConformance(t *testing.T) {
 			if err != nil {
 				t.Fatalf("NewUnixID failed: %v", err)
 			}
-			store, err := New(ctx, Config{
+			store, err := agentmemory.New(ctx, agentmemory.Config{
 				Conn:     conn,
 				Embedder: embed.NewMockEmbedder(128),
 				IDGen:    idGen,
@@ -59,7 +54,7 @@ func TestAgentMemoryConformance(t *testing.T) {
 func TestMigrate_CreatesAllTables(t *testing.T) {
 	conn := mem.New()
 	compiler := &mockDDLCompiler{}
-	if err := Migrate(conn, compiler); err != nil {
+	if err := agentmemory.Migrate(conn, compiler); err != nil {
 		t.Fatalf("first Migrate failed: %v", err)
 	}
 
@@ -81,7 +76,39 @@ func TestMigrate_CreatesAllTables(t *testing.T) {
 	}
 
 	// Verify idempotency
-	if err := Migrate(conn, compiler); err != nil {
+	if err := agentmemory.Migrate(conn, compiler); err != nil {
 		t.Fatalf("second Migrate failed: %v", err)
+	}
+}
+
+func TestAppendTurn_EmptyIDErrors(t *testing.T) {
+	ctx := context.Background()
+	conn := mem.New()
+	_ = agentmemory.Migrate(conn, &mockDDLCompiler{})
+	idGen, _ := unixid.NewUnixID()
+	store, _ := agentmemory.New(ctx, agentmemory.Config{
+		Conn:     conn,
+		Embedder: embed.NewMockEmbedder(128),
+		IDGen:    idGen,
+	})
+	err := store.AppendTurn(ctx, "s1", agentcontext.Turn{ID: ""})
+	if err == nil || err.Error() != "agentmemory: AppendTurn: Turn.ID must not be empty" {
+		t.Fatalf("got err %v, want 'agentmemory: AppendTurn: Turn.ID must not be empty'", err)
+	}
+}
+
+func TestSaveSummary_EmptyIDErrors(t *testing.T) {
+	ctx := context.Background()
+	conn := mem.New()
+	_ = agentmemory.Migrate(conn, &mockDDLCompiler{})
+	idGen, _ := unixid.NewUnixID()
+	store, _ := agentmemory.New(ctx, agentmemory.Config{
+		Conn:     conn,
+		Embedder: embed.NewMockEmbedder(128),
+		IDGen:    idGen,
+	})
+	err := store.SaveSummary(ctx, "s1", agentcontext.Summary{ID: ""})
+	if err == nil || err.Error() != "agentmemory: SaveSummary: Summary.ID must not be empty" {
+		t.Fatalf("got err %v, want 'agentmemory: SaveSummary: Summary.ID must not be empty'", err)
 	}
 }

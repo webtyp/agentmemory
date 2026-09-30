@@ -3,7 +3,7 @@ PLAN: "refactor!: implement agent v0.7 memory ports (Turn, Summary); tests in te
 TAG: v0.2.0
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: complete
 SESSION: 421318240710812576
 ---
 
@@ -112,3 +112,13 @@ for tests, and do not add `export_test.go`.
 | 4 | `tool_calls.go` | `grep -rn "agent.ToolCall\|agent.Message" --include=*.go .` → empty |
 | 5 | tests | `gotest` and `gotest -tinygo` pass, including the conformance suite |
 | 6 | `tests/` | `ls *_test.go` in the root → nothing; `gotest` passes |
+
+## Executor notes
+
+All stages (1 through 6) of this plan have been executed completely without deviations:
+- Updated dependencies in `go.mod` to `webtyp.com/agent@v0.7.0`, `webtyp.com/agentcontext@v0.2.0`, and `webtyp.com/llm@v0.1.0`.
+- Implemented `AppendTurn`, `GetTurns`, and `DeleteTurns` in `conversation.go`.
+- Deleted `episode.go` and created `summary.go` with `SaveSummary` and `GetSummaries`.
+- Updated `tool_calls.go` to encode/decode `[]llm.ToolCall`.
+- Moved all tests to `tests/` package and added `TestAppendTurn_EmptyIDErrors`, `TestSaveSummary_EmptyIDErrors`, and `TestToolCalls_RowsFromV01StillDecode`.
+- Verified all tests pass cleanly under standard Go test, WASM compilation, and TinyGo.
