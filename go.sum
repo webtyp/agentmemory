@@ -1,7 +1,7 @@
 webtyp.com/agent v0.9.0 h1:ZyQJ7VK4Sgh++znw8Jnx3VeICFF7ISdU6bW4bNqwDrU=
 webtyp.com/agent v0.9.0/go.mod h1:c3eIADfWCZOTaK6sEbQOfkDqpMuJi0U1CUCserg0zlk=
-webtyp.com/agentcontext v0.2.0 h1:uJa+ATVCyk9o1QkuJB7O4EU1AVxpadmANcyBJ3b7K0Y=
-webtyp.com/agentcontext v0.2.0/go.mod h1:dkJ+S9eqSudFbn5PEgs/31b2x0X+5h+UPiEuY0g83n4=
+webtyp.com/agentcontext v0.3.0 h1:B0yZpxJpB53srNHFKsv7dgxXTls+IL0ySQyUmRPNtdA=
+webtyp.com/agentcontext v0.3.0/go.mod h1:fQE58FoEdOhGinHfawjaHVXA7727G8wVW/83h9u2pNE=
 webtyp.com/await v0.1.2 h1:0rZLLCvu+y/8CJU0YH2ZGi/OLygZwZTBJIrGi0+Z0Fg=
 webtyp.com/await v0.1.2/go.mod h1:SiF0Y5G9XEnN5u6SISxLU4GW/8y9ENR1K3fQF1uHMCQ=
 webtyp.com/base64 v0.0.6 h1:Tkr9Y/s3RLa6yuatk5Tdwdc90NhDP6pNYO1HQG9iIHM=
