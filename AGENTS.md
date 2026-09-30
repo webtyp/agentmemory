@@ -2,14 +2,14 @@
 
 Constraints for agents working on this library. **Read this before any change.**
 The current work order is [docs/PLAN.md](docs/PLAN.md); the master index is
-[`agent/docs/MASTER_PLAN.md`](https://github.com/webtyp/agent/blob/main/docs/MASTER_PLAN.md).
+[`retrieval/docs/SEMANTIC_SEARCH_MASTER_PLAN.md`](https://github.com/webtyp/retrieval/blob/main/docs/SEMANTIC_SEARCH_MASTER_PLAN.md).
 
 ---
 
 ## What this library is
 
 The **only** implementation of `webtyp.com/agent.MemoryStore`. It exists so `webtyp/agent`
-can stay free of any storage engine — see `MASTER_PLAN.md` D7. Concretely: `ConversationStore`,
+can stay free of any storage engine — see `SEMANTIC_SEARCH_MASTER_PLAN.md` D7. Concretely: `ConversationStore`,
 `EpisodeStore` and `ToolLogStore` run on `webtyp.com/orm` + `webtyp.com/ddl` (any
 `storage.Conn`: `mem`, `sqlt`, `postgres`, `indexdb`); `KnowledgeStore` runs on
 `webtyp.com/vectordb` (semantic search via an injected `embed.Embedder`).
@@ -78,7 +78,7 @@ above).
 composed inside this package's constructor, not queried with `orm`. Do not add a `knowledge`
 `model.Definition` "to keep it consistent" — `vectordb` already owns its own schema
 (`vectordb.Schema()`) and its own persistence; duplicating it here is exactly the
-"reimplement the port's job at the leaf" mistake `MASTER_PLAN.md` D7 was written to head off.
+"reimplement the port's job at the leaf" mistake `SEMANTIC_SEARCH_MASTER_PLAN.md` D7 was written to head off.
 
 ---
 
