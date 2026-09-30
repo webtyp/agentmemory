@@ -10,7 +10,7 @@ The current work order is [docs/PLAN.md](docs/PLAN.md); the master index is
 
 The **only** implementation of `webtyp.com/agent.MemoryStore`. It exists so `webtyp/agent`
 can stay free of any storage engine — see `SEMANTIC_SEARCH_MASTER_PLAN.md` D7. Concretely: `ConversationStore`,
-`EpisodeStore` and `ToolLogStore` run on `webtyp.com/orm` + `webtyp.com/ddl` (any
+`SummaryStore` and `ToolLogStore` run on `webtyp.com/orm` + `webtyp.com/ddl` (any
 `storage.Conn`: `mem`, `sqlt`, `postgres`, `indexdb`); `KnowledgeStore` runs on
 `webtyp.com/vectordb` (semantic search via an injected `embed.Embedder`).
 
@@ -26,7 +26,7 @@ red under TinyGo is not done.
 | Import | Why |
 |---|---|
 | `webtyp.com/agent` | the `MemoryStore` contract this package implements |
-| `webtyp.com/orm` | `ConversationStore`/`EpisodeStore`/`ToolLogStore` |
+| `webtyp.com/orm` | `ConversationStore`/`SummaryStore`/`ToolLogStore` |
 | `webtyp.com/ddl` | schema declaration + `Migrate` |
 | `webtyp.com/vectordb` | `KnowledgeStore` |
 | `webtyp.com/embed` | only the `Embedder` **port** — injected into `vectordb.Config`, never a concrete adapter constructed here |
@@ -73,7 +73,7 @@ above).
 
 ## The two-table split — do not conflate them
 
-`ConversationStore`/`EpisodeStore`/`ToolLogStore` are SQL-shaped: fixed columns, `orm.DB`,
+`ConversationStore`/`SummaryStore`/`ToolLogStore` are SQL-shaped: fixed columns, `orm.DB`,
 `ddl`-declared schema. `KnowledgeStore` is **not** a fourth table — it is `vectordb.Store`,
 composed inside this package's constructor, not queried with `orm`. Do not add a `knowledge`
 `model.Definition` "to keep it consistent" — `vectordb` already owns its own schema
@@ -84,7 +84,9 @@ composed inside this package's constructor, not queried with `orm`. Do not add a
 
 ## Layout & tests
 
-- `models.go` — hand-written `model.Definition` values for `Message`, `Episode`, `ToolLog`
+- `models.go` — hand-written `model.Definition` values for `Message`, `Episode`, `ToolLog`.
+  The `Episode` table stores `agentcontext.Summary` (`summary.go`); the table keeps its old name so
+  existing data needs no migration
   (the `ormc` input). Run `ormc` from the module root to generate `models_orm.go` — **do not
   hand-write the generated file**, and do not edit it after generation (`DO NOT EDIT` header).
 - `migrate.go` — `Migrate(conn ddl.Execer, compiler ddl.Compiler) error`, deploy-time schema
