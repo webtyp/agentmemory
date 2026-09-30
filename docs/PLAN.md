@@ -3,6 +3,8 @@ PLAN: "refactor!: implement agent v0.7 memory ports (Turn, Summary); tests in te
 TAG: v0.2.0
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 421318240710812576
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.
