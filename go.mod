@@ -3,7 +3,7 @@ module webtyp.com/agentmemory
 go 1.26.8
 
 require (
-	webtyp.com/agent v0.7.0
+	webtyp.com/agent v0.8.0
 	webtyp.com/agentcontext v0.2.0
 	webtyp.com/context v0.0.23
 	webtyp.com/ddl v0.0.20
