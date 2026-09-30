@@ -1,13 +1,13 @@
 package agentmemory
 
 import (
-	"webtyp.com/agent"
 	"webtyp.com/fmt"
+	"webtyp.com/llm"
 )
 
 // encodeToolCalls serializes calls into the netstring-framed string Message.ToolCalls stores.
 // Empty input returns "".
-func encodeToolCalls(calls []agent.ToolCall) string {
+func encodeToolCalls(calls []llm.ToolCall) string {
 	var b fmt.Builder
 	for _, c := range calls {
 		writeField(&b, c.ID)
@@ -26,8 +26,8 @@ func writeField(b *fmt.Builder, s string) {
 
 // decodeToolCalls is encodeToolCalls's inverse. Returns an error on malformed framing —
 // never guesses or silently truncates.
-func decodeToolCalls(s string) ([]agent.ToolCall, error) {
-	var calls []agent.ToolCall
+func decodeToolCalls(s string) ([]llm.ToolCall, error) {
+	var calls []llm.ToolCall
 	i := 0
 	for i < len(s) {
 		id, next, err := readField(s, i)
@@ -45,7 +45,7 @@ func decodeToolCalls(s string) ([]agent.ToolCall, error) {
 			return nil, fmt.Err("agentmemory: decoding tool call input: ", err)
 		}
 		i = next
-		calls = append(calls, agent.ToolCall{ID: id, Name: name, Input: input})
+		calls = append(calls, llm.ToolCall{ID: id, Name: name, Input: input})
 	}
 	return calls, nil
 }
