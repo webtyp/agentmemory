@@ -4,7 +4,7 @@ go 1.26.8
 
 require (
 	webtyp.com/agent v0.10.0
-	webtyp.com/agentcontext v0.3.0
+	webtyp.com/agentcontext v0.3.1
 	webtyp.com/context v0.0.23
 	webtyp.com/ddl v0.0.20
 	webtyp.com/embed v0.4.0
