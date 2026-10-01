@@ -3,8 +3,9 @@ PLAN: "feat: ToolIndex by meaning — embeds every tool and the message, ranks b
 TAG: v0.3.0
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 13842461291021709941
+PR: https://github.com/webtyp/agentmemory/pull/3
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.

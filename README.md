@@ -3,6 +3,22 @@
 
 MemoryStore implementation for webtyp/agent over orm and ddl: runs on SQL backends and on IndexedDB
 
+## Usage
+
+### Tool Index
+
+Find tools by meaning: `agentmemory.NewToolIndex(embedder)` (bekko is the embedder the browser uses).
+
+```go
+idx, err := agentmemory.NewToolIndex(embedder)
+if err != nil {
+	return err
+}
+ag, err := agent.New(agent.Config{
+	ToolIndex: idx,
+})
+```
+
 ## Documentation
 
 - [Agent guide](AGENTS.md): rules for anyone changing this library.

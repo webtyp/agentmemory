@@ -95,6 +95,7 @@ composed inside this package's constructor, not queried with `orm`. Do not add a
 - `store.go` — `Config`, `New(ctx, cfg) (*Store, error)`, the composed `Store` type.
 - One file per `agent` sub-contract implementation: `conversation.go`, `episode.go`,
   `knowledge.go`, `tool_log.go`.
+- `tool_index.go` — `ToolIndex` semantic search over tools; lives in memory and does not use `vectordb` because the tool set is small and re-indexed per agent instance.
 - Max 500 lines per file; split further by domain if exceeded.
 - Publish with `gopush 'message'` — never `git commit`/`git push` directly.
 
