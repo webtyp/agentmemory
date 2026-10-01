@@ -3,6 +3,8 @@ PLAN: "feat: ToolIndex by meaning — embeds every tool and the message, ranks b
 TAG: v0.3.0
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 13842461291021709941
 ---
 
 > This plan is dispatched via the CodeJob workflow. See skill: agents-workflow.
