@@ -21,9 +21,10 @@ require (
 
 require (
 	webtyp.com/base64 v0.0.6 // indirect
+	webtyp.com/escape v0.1.0 // indirect
 	webtyp.com/fetch v0.1.29 // indirect
 	webtyp.com/filepath v0.1.0 // indirect
-	webtyp.com/json v0.5.27 // indirect
+	webtyp.com/json v0.5.29 // indirect
 	webtyp.com/mcp v0.2.40 // indirect
 	webtyp.com/router v0.3.2 // indirect
 )
