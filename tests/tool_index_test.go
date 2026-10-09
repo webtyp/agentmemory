@@ -225,7 +225,6 @@ func TestToolIndex_ConsumerShaped(t *testing.T) {
 	}
 
 	conn := mem.New()
-	_ = agentmemory.Migrate(conn, &mockCompiler{})
 	idGen, _ := unixid.NewUnixID()
 	memStore, err := agentmemory.New(ctx, agentmemory.Config{
 		Conn:     conn,

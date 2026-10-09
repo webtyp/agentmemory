@@ -29,11 +29,7 @@ func TestAgentMemoryConformance(t *testing.T) {
 		Name: "agentmemory/mem",
 		New: func(t *testing.T) agent.MemoryStore {
 			ctx := context.Background()
-			conn := mem.New()
-			err := agentmemory.Migrate(conn, &mockDDLCompiler{})
-			if err != nil {
-				t.Fatalf("Migrate failed: %v", err)
-			}
+			conn := mem.New() // schemaless: tables appear on first insert, no DDL to run
 			idGen, err := unixid.NewUnixID()
 			if err != nil {
 				t.Fatalf("NewUnixID failed: %v", err)
@@ -51,8 +47,17 @@ func TestAgentMemoryConformance(t *testing.T) {
 	})
 }
 
+// recordingExecer stands in for a DDL-capable connection: mem is schemaless and rejects raw
+// statements, so Migrate is proven against the statements it compiles and executes.
+type recordingExecer struct{ Queries []string }
+
+func (e *recordingExecer) Exec(query string, args ...any) error {
+	e.Queries = append(e.Queries, query)
+	return nil
+}
+
 func TestMigrate_CreatesAllTables(t *testing.T) {
-	conn := mem.New()
+	conn := &recordingExecer{}
 	compiler := &mockDDLCompiler{}
 	if err := agentmemory.Migrate(conn, compiler); err != nil {
 		t.Fatalf("first Migrate failed: %v", err)
@@ -84,7 +89,6 @@ func TestMigrate_CreatesAllTables(t *testing.T) {
 func TestAppendTurn_EmptyIDErrors(t *testing.T) {
 	ctx := context.Background()
 	conn := mem.New()
-	_ = agentmemory.Migrate(conn, &mockDDLCompiler{})
 	idGen, _ := unixid.NewUnixID()
 	store, _ := agentmemory.New(ctx, agentmemory.Config{
 		Conn:     conn,
@@ -100,7 +104,6 @@ func TestAppendTurn_EmptyIDErrors(t *testing.T) {
 func TestSaveSummary_EmptyIDErrors(t *testing.T) {
 	ctx := context.Background()
 	conn := mem.New()
-	_ = agentmemory.Migrate(conn, &mockDDLCompiler{})
 	idGen, _ := unixid.NewUnixID()
 	store, _ := agentmemory.New(ctx, agentmemory.Config{
 		Conn:     conn,

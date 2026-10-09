@@ -24,7 +24,6 @@ func (m *mockCompiler) CompileDDL(s ddl.Stmt, _ model.Model) (string, []any, err
 func TestToolCalls_RoundTrip(t *testing.T) {
 	ctx := context.Background()
 	conn := mem.New()
-	_ = agentmemory.Migrate(conn, &mockCompiler{})
 	idGen, _ := unixid.NewUnixID()
 	store, _ := agentmemory.New(ctx, agentmemory.Config{
 		Conn:     conn,
@@ -106,7 +105,6 @@ func TestToolCalls_RoundTrip(t *testing.T) {
 func TestToolCalls_RowsFromV01StillDecode(t *testing.T) {
 	ctx := context.Background()
 	conn := mem.New()
-	_ = agentmemory.Migrate(conn, &mockCompiler{})
 	db := orm.New(conn)
 
 	// Create a message row with hand-built v0.1 netstring encoding:
