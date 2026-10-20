@@ -13,7 +13,7 @@ var MessageModel = model.Definition{
 		{Name: "tool_call_id", Type: model.Text(), OmitEmpty: true},
 		{Name: "tool_calls", Type: model.Text(), OmitEmpty: true},
 		{Name: "token_count", Type: model.Int()},
-		{Name: "created_at", Type: model.Int()},
+		{Name: "created_at", Type: model.UnixTime()},
 	},
 }
 
@@ -26,7 +26,7 @@ var EpisodeModel = model.Definition{
 		{Name: "token_count", Type: model.Int()},
 		{Name: "from_msg_id", Type: model.Text()},
 		{Name: "to_msg_id", Type: model.Text()},
-		{Name: "created_at", Type: model.Int()},
+		{Name: "created_at", Type: model.UnixTime()},
 	},
 }
 
@@ -40,6 +40,6 @@ var ToolLogModel = model.Definition{
 		{Name: "output_text", Type: model.Text(), OmitEmpty: true},
 		{Name: "err_text", Type: model.Text(), OmitEmpty: true},
 		{Name: "duration_ms", Type: model.Int()},
-		{Name: "created_at", Type: model.Int()},
+		{Name: "created_at", Type: model.UnixTime()},
 	},
 }

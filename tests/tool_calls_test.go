@@ -2,6 +2,7 @@ package tests
 
 import (
 	"testing"
+	"webtyp.com/time"
 
 	"webtyp.com/agentcontext"
 	"webtyp.com/agentmemory"
@@ -65,7 +66,7 @@ func TestToolCalls_RoundTrip(t *testing.T) {
 					ToolCalls: tt.calls,
 				},
 				Tokens:    10,
-				CreatedAt: int64(100 + i),
+				CreatedAt: time.Unix(100 + i),
 			}
 			if err := store.AppendTurn(ctx, "session_1", turn); err != nil {
 				t.Fatalf("AppendTurn failed: %v", err)

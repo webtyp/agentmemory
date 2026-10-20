@@ -5,25 +5,28 @@ package agentmemory
 import (
 	"webtyp.com/model"
 	"webtyp.com/orm"
+	"webtyp.com/time"
 )
 
 type Message struct {
-	Id string
-	SessionId string
-	Role string
-	Content string
-	ToolName string
+	Id         string
+	SessionId  string
+	Role       string
+	Content    string
+	ToolName   string
 	ToolCallId string
-	ToolCalls string
+	ToolCalls  string
 	TokenCount int64
-	CreatedAt int64
+	CreatedAt  time.Unix
 }
 
 func (m *Message) ModelName() string { return "message" }
 
 func (m *Message) Schema() []model.Field { return MessageModel.Fields }
 
-func (m *Message) Pointers() []any { return []any{&m.Id, &m.SessionId, &m.Role, &m.Content, &m.ToolName, &m.ToolCallId, &m.ToolCalls, &m.TokenCount, &m.CreatedAt} }
+func (m *Message) Pointers() []any {
+	return []any{&m.Id, &m.SessionId, &m.Role, &m.Content, &m.ToolName, &m.ToolCallId, &m.ToolCalls, &m.TokenCount, (*int64)(&m.CreatedAt)}
+}
 
 func (m *Message) IsNil() bool { return m == nil }
 
@@ -32,31 +35,55 @@ func (m *Message) EncodeFields(w model.FieldWriter) {
 	w.String("session_id", m.SessionId)
 	w.String("role", m.Role)
 	w.String("content", m.Content)
-	if m.ToolName != "" { w.String("tool_name", m.ToolName) }
-	if m.ToolCallId != "" { w.String("tool_call_id", m.ToolCallId) }
-	if m.ToolCalls != "" { w.String("tool_calls", m.ToolCalls) }
+	if m.ToolName != "" {
+		w.String("tool_name", m.ToolName)
+	}
+	if m.ToolCallId != "" {
+		w.String("tool_call_id", m.ToolCallId)
+	}
+	if m.ToolCalls != "" {
+		w.String("tool_calls", m.ToolCalls)
+	}
 	w.Int("token_count", m.TokenCount)
-	w.Int("created_at", m.CreatedAt)
+	w.Int("created_at", int64(m.CreatedAt))
 }
 
 func (m *Message) DecodeFields(r model.FieldReader) {
-	if v, ok := r.String("id"); ok { m.Id = v }
-	if v, ok := r.String("session_id"); ok { m.SessionId = v }
-	if v, ok := r.String("role"); ok { m.Role = v }
-	if v, ok := r.String("content"); ok { m.Content = v }
-	if v, ok := r.String("tool_name"); ok { m.ToolName = v }
-	if v, ok := r.String("tool_call_id"); ok { m.ToolCallId = v }
-	if v, ok := r.String("tool_calls"); ok { m.ToolCalls = v }
-	if v, ok := r.Int("token_count"); ok { m.TokenCount = v }
-	if v, ok := r.Int("created_at"); ok { m.CreatedAt = v }
+	if v, ok := r.String("id"); ok {
+		m.Id = v
+	}
+	if v, ok := r.String("session_id"); ok {
+		m.SessionId = v
+	}
+	if v, ok := r.String("role"); ok {
+		m.Role = v
+	}
+	if v, ok := r.String("content"); ok {
+		m.Content = v
+	}
+	if v, ok := r.String("tool_name"); ok {
+		m.ToolName = v
+	}
+	if v, ok := r.String("tool_call_id"); ok {
+		m.ToolCallId = v
+	}
+	if v, ok := r.String("tool_calls"); ok {
+		m.ToolCalls = v
+	}
+	if v, ok := r.Int("token_count"); ok {
+		m.TokenCount = v
+	}
+	if v, ok := r.Int("created_at"); ok {
+		m.CreatedAt = time.Unix(v)
+	}
 }
 
 type MessageList []*Message
 
-func (s *MessageList) Len() int             { return len(*s) }
-func (s *MessageList) At(i int) model.Fielder { return (*s)[i] }
-func (s *MessageList) Append() model.Fielder  { v := &Message{}; *s = append(*s, v); return v }
-func (s *MessageList) IsNil() bool          { return s == nil }
+func (s *MessageList) Len() int                         { return len(*s) }
+func (s *MessageList) At(i int) model.Fielder           { return (*s)[i] }
+func (s *MessageList) Append() model.Fielder            { v := &Message{}; *s = append(*s, v); return v }
+func (s *MessageList) IsNil() bool                      { return s == nil }
 func (s *MessageList) EncodeFields(_ model.FieldWriter) {}
 func (s *MessageList) DecodeFields(_ model.FieldReader) {}
 
@@ -65,25 +92,25 @@ func (m *Message) Validate(action byte) error {
 }
 
 var Message_ = struct {
-	Id string
-	SessionId string
-	Role string
-	Content string
-	ToolName string
+	Id         string
+	SessionId  string
+	Role       string
+	Content    string
+	ToolName   string
 	ToolCallId string
-	ToolCalls string
+	ToolCalls  string
 	TokenCount string
-	CreatedAt string
+	CreatedAt  string
 }{
-	Id: "id",
-	SessionId: "session_id",
-	Role: "role",
-	Content: "content",
-	ToolName: "tool_name",
+	Id:         "id",
+	SessionId:  "session_id",
+	Role:       "role",
+	Content:    "content",
+	ToolName:   "tool_name",
 	ToolCallId: "tool_call_id",
-	ToolCalls: "tool_calls",
+	ToolCalls:  "tool_calls",
 	TokenCount: "token_count",
-	CreatedAt: "created_at",
+	CreatedAt:  "created_at",
 }
 
 func ReadOneMessage(qb *orm.QB, model *Message) (*Message, error) {
@@ -104,20 +131,22 @@ func ReadAllMessage(qb *orm.QB) (MessageList, error) {
 }
 
 type Episode struct {
-	Id string
-	SessionId string
-	Summary string
+	Id         string
+	SessionId  string
+	Summary    string
 	TokenCount int64
-	FromMsgId string
-	ToMsgId string
-	CreatedAt int64
+	FromMsgId  string
+	ToMsgId    string
+	CreatedAt  time.Unix
 }
 
 func (m *Episode) ModelName() string { return "episode" }
 
 func (m *Episode) Schema() []model.Field { return EpisodeModel.Fields }
 
-func (m *Episode) Pointers() []any { return []any{&m.Id, &m.SessionId, &m.Summary, &m.TokenCount, &m.FromMsgId, &m.ToMsgId, &m.CreatedAt} }
+func (m *Episode) Pointers() []any {
+	return []any{&m.Id, &m.SessionId, &m.Summary, &m.TokenCount, &m.FromMsgId, &m.ToMsgId, (*int64)(&m.CreatedAt)}
+}
 
 func (m *Episode) IsNil() bool { return m == nil }
 
@@ -128,25 +157,39 @@ func (m *Episode) EncodeFields(w model.FieldWriter) {
 	w.Int("token_count", m.TokenCount)
 	w.String("from_msg_id", m.FromMsgId)
 	w.String("to_msg_id", m.ToMsgId)
-	w.Int("created_at", m.CreatedAt)
+	w.Int("created_at", int64(m.CreatedAt))
 }
 
 func (m *Episode) DecodeFields(r model.FieldReader) {
-	if v, ok := r.String("id"); ok { m.Id = v }
-	if v, ok := r.String("session_id"); ok { m.SessionId = v }
-	if v, ok := r.String("summary"); ok { m.Summary = v }
-	if v, ok := r.Int("token_count"); ok { m.TokenCount = v }
-	if v, ok := r.String("from_msg_id"); ok { m.FromMsgId = v }
-	if v, ok := r.String("to_msg_id"); ok { m.ToMsgId = v }
-	if v, ok := r.Int("created_at"); ok { m.CreatedAt = v }
+	if v, ok := r.String("id"); ok {
+		m.Id = v
+	}
+	if v, ok := r.String("session_id"); ok {
+		m.SessionId = v
+	}
+	if v, ok := r.String("summary"); ok {
+		m.Summary = v
+	}
+	if v, ok := r.Int("token_count"); ok {
+		m.TokenCount = v
+	}
+	if v, ok := r.String("from_msg_id"); ok {
+		m.FromMsgId = v
+	}
+	if v, ok := r.String("to_msg_id"); ok {
+		m.ToMsgId = v
+	}
+	if v, ok := r.Int("created_at"); ok {
+		m.CreatedAt = time.Unix(v)
+	}
 }
 
 type EpisodeList []*Episode
 
-func (s *EpisodeList) Len() int             { return len(*s) }
-func (s *EpisodeList) At(i int) model.Fielder { return (*s)[i] }
-func (s *EpisodeList) Append() model.Fielder  { v := &Episode{}; *s = append(*s, v); return v }
-func (s *EpisodeList) IsNil() bool          { return s == nil }
+func (s *EpisodeList) Len() int                         { return len(*s) }
+func (s *EpisodeList) At(i int) model.Fielder           { return (*s)[i] }
+func (s *EpisodeList) Append() model.Fielder            { v := &Episode{}; *s = append(*s, v); return v }
+func (s *EpisodeList) IsNil() bool                      { return s == nil }
 func (s *EpisodeList) EncodeFields(_ model.FieldWriter) {}
 func (s *EpisodeList) DecodeFields(_ model.FieldReader) {}
 
@@ -155,21 +198,21 @@ func (m *Episode) Validate(action byte) error {
 }
 
 var Episode_ = struct {
-	Id string
-	SessionId string
-	Summary string
+	Id         string
+	SessionId  string
+	Summary    string
 	TokenCount string
-	FromMsgId string
-	ToMsgId string
-	CreatedAt string
+	FromMsgId  string
+	ToMsgId    string
+	CreatedAt  string
 }{
-	Id: "id",
-	SessionId: "session_id",
-	Summary: "summary",
+	Id:         "id",
+	SessionId:  "session_id",
+	Summary:    "summary",
 	TokenCount: "token_count",
-	FromMsgId: "from_msg_id",
-	ToMsgId: "to_msg_id",
-	CreatedAt: "created_at",
+	FromMsgId:  "from_msg_id",
+	ToMsgId:    "to_msg_id",
+	CreatedAt:  "created_at",
 }
 
 func ReadOneEpisode(qb *orm.QB, model *Episode) (*Episode, error) {
@@ -190,21 +233,23 @@ func ReadAllEpisode(qb *orm.QB) (EpisodeList, error) {
 }
 
 type ToolLog struct {
-	Id string
-	SessionId string
-	ToolName string
-	InputJson string
+	Id         string
+	SessionId  string
+	ToolName   string
+	InputJson  string
 	OutputText string
-	ErrText string
+	ErrText    string
 	DurationMs int64
-	CreatedAt int64
+	CreatedAt  time.Unix
 }
 
 func (m *ToolLog) ModelName() string { return "tool_log" }
 
 func (m *ToolLog) Schema() []model.Field { return ToolLogModel.Fields }
 
-func (m *ToolLog) Pointers() []any { return []any{&m.Id, &m.SessionId, &m.ToolName, &m.InputJson, &m.OutputText, &m.ErrText, &m.DurationMs, &m.CreatedAt} }
+func (m *ToolLog) Pointers() []any {
+	return []any{&m.Id, &m.SessionId, &m.ToolName, &m.InputJson, &m.OutputText, &m.ErrText, &m.DurationMs, (*int64)(&m.CreatedAt)}
+}
 
 func (m *ToolLog) IsNil() bool { return m == nil }
 
@@ -213,29 +258,49 @@ func (m *ToolLog) EncodeFields(w model.FieldWriter) {
 	w.String("session_id", m.SessionId)
 	w.String("tool_name", m.ToolName)
 	w.String("input_json", m.InputJson)
-	if m.OutputText != "" { w.String("output_text", m.OutputText) }
-	if m.ErrText != "" { w.String("err_text", m.ErrText) }
+	if m.OutputText != "" {
+		w.String("output_text", m.OutputText)
+	}
+	if m.ErrText != "" {
+		w.String("err_text", m.ErrText)
+	}
 	w.Int("duration_ms", m.DurationMs)
-	w.Int("created_at", m.CreatedAt)
+	w.Int("created_at", int64(m.CreatedAt))
 }
 
 func (m *ToolLog) DecodeFields(r model.FieldReader) {
-	if v, ok := r.String("id"); ok { m.Id = v }
-	if v, ok := r.String("session_id"); ok { m.SessionId = v }
-	if v, ok := r.String("tool_name"); ok { m.ToolName = v }
-	if v, ok := r.String("input_json"); ok { m.InputJson = v }
-	if v, ok := r.String("output_text"); ok { m.OutputText = v }
-	if v, ok := r.String("err_text"); ok { m.ErrText = v }
-	if v, ok := r.Int("duration_ms"); ok { m.DurationMs = v }
-	if v, ok := r.Int("created_at"); ok { m.CreatedAt = v }
+	if v, ok := r.String("id"); ok {
+		m.Id = v
+	}
+	if v, ok := r.String("session_id"); ok {
+		m.SessionId = v
+	}
+	if v, ok := r.String("tool_name"); ok {
+		m.ToolName = v
+	}
+	if v, ok := r.String("input_json"); ok {
+		m.InputJson = v
+	}
+	if v, ok := r.String("output_text"); ok {
+		m.OutputText = v
+	}
+	if v, ok := r.String("err_text"); ok {
+		m.ErrText = v
+	}
+	if v, ok := r.Int("duration_ms"); ok {
+		m.DurationMs = v
+	}
+	if v, ok := r.Int("created_at"); ok {
+		m.CreatedAt = time.Unix(v)
+	}
 }
 
 type ToolLogList []*ToolLog
 
-func (s *ToolLogList) Len() int             { return len(*s) }
-func (s *ToolLogList) At(i int) model.Fielder { return (*s)[i] }
-func (s *ToolLogList) Append() model.Fielder  { v := &ToolLog{}; *s = append(*s, v); return v }
-func (s *ToolLogList) IsNil() bool          { return s == nil }
+func (s *ToolLogList) Len() int                         { return len(*s) }
+func (s *ToolLogList) At(i int) model.Fielder           { return (*s)[i] }
+func (s *ToolLogList) Append() model.Fielder            { v := &ToolLog{}; *s = append(*s, v); return v }
+func (s *ToolLogList) IsNil() bool                      { return s == nil }
 func (s *ToolLogList) EncodeFields(_ model.FieldWriter) {}
 func (s *ToolLogList) DecodeFields(_ model.FieldReader) {}
 
@@ -244,23 +309,23 @@ func (m *ToolLog) Validate(action byte) error {
 }
 
 var ToolLog_ = struct {
-	Id string
-	SessionId string
-	ToolName string
-	InputJson string
+	Id         string
+	SessionId  string
+	ToolName   string
+	InputJson  string
 	OutputText string
-	ErrText string
+	ErrText    string
 	DurationMs string
-	CreatedAt string
+	CreatedAt  string
 }{
-	Id: "id",
-	SessionId: "session_id",
-	ToolName: "tool_name",
-	InputJson: "input_json",
+	Id:         "id",
+	SessionId:  "session_id",
+	ToolName:   "tool_name",
+	InputJson:  "input_json",
 	OutputText: "output_text",
-	ErrText: "err_text",
+	ErrText:    "err_text",
 	DurationMs: "duration_ms",
-	CreatedAt: "created_at",
+	CreatedAt:  "created_at",
 }
 
 func ReadOneToolLog(qb *orm.QB, model *ToolLog) (*ToolLog, error) {

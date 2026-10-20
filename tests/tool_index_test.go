@@ -4,11 +4,9 @@ import (
 	"errors"
 	"hash/fnv"
 	"strings"
-	"sync"
 	"testing"
 
 	"webtyp.com/agent"
-	"webtyp.com/agentcontext"
 	"webtyp.com/agentmemory"
 	"webtyp.com/context"
 	"webtyp.com/embed"
@@ -49,26 +47,11 @@ type mockTool struct {
 	desc string
 }
 
-func (m mockTool) Name() string                                              { return m.name }
-func (m mockTool) Description() string                                       { return m.desc }
-func (m mockTool) InputSchema() string                                       { return `{"type":"object"}` }
-func (m mockTool) Action() model.Action                                      { return model.Read }
+func (m mockTool) Name() string                                                  { return m.name }
+func (m mockTool) Description() string                                           { return m.desc }
+func (m mockTool) InputSchema() string                                           { return `{"type":"object"}` }
+func (m mockTool) Action() model.Action                                          { return model.Read }
 func (m mockTool) Execute(ctx *context.Context, argsJSON string) (string, error) { return "ok", nil }
-
-type recordingLLM struct {
-	mu       sync.Mutex
-	requests []llm.Request
-}
-
-func (r *recordingLLM) Generate(ctx *context.Context, req llm.Request) (llm.Response, error) {
-	r.mu.Lock()
-	r.requests = append(r.requests, req)
-	r.mu.Unlock()
-	return llm.Response{
-		Text:       "Done",
-		StopReason: llm.StopEndTurn,
-	}, nil
-}
 
 type mockTokens struct{}
 
@@ -235,59 +218,49 @@ func TestToolIndex_ConsumerShaped(t *testing.T) {
 		t.Fatalf("agentmemory.New failed: %v", err)
 	}
 
-	llmClient := &recordingLLM{}
-
+	// The agent asks its Decider to choose among the candidate tools the index returned: with Candidates 1 and three
+	// tools, the only candidate for "precios de los servicios" must be the price tool.
+	dec := &recordingDecider{}
 	ag, err := agent.New(agent.Config{
-		Identity: agentcontext.Identity{Name: "test-agent"},
-		LLMs: agent.LLMConfig{
-			Primary: llmClient,
-		},
-		Tokens: mockTokens{},
-		Budget: agentcontext.Budget{
-			ContextTokens: 8192,
-			OutputTokens:  1024,
-		},
-		Memory:         memStore,
-		IDGen:          idGen,
-		ToolIndex:      idx,
-		PreselectTools: 1,
-		LocalTools:     localTools,
+		Decider:    dec,
+		Texts:      testTexts(),
+		Tokens:     mockTokens{},
+		Memory:     memStore,
+		IDGen:      idGen,
+		ToolIndex:  idx,
+		Candidates: 1,
+		LocalTools: localTools,
 	})
 	if err != nil {
 		t.Fatalf("agent.New failed: %v", err)
 	}
 
-	_, err = ag.Run(ctx, "session1", "precios de los servicios")
-	if err != nil {
+	if _, err := ag.Run(ctx, "session1", "precios de los servicios"); err != nil {
 		t.Fatalf("ag.Run failed: %v", err)
 	}
-
-	llmClient.mu.Lock()
-	reqs := llmClient.requests
-	llmClient.mu.Unlock()
-
-	if len(reqs) == 0 {
-		t.Fatal("expected at least 1 LLM request")
+	if len(dec.questions) == 0 {
+		t.Fatal("expected the agent to ask its decider which tool to use")
 	}
-
-	firstReq := reqs[0]
-	toolNames := make([]string, len(firstReq.Tools))
-	for i, td := range firstReq.Tools {
-		toolNames[i] = td.Name
+	options := dec.questions[0].Options
+	if len(options) != 2 || !strings.Contains(options[0], "item_catalog.list_items") {
+		t.Errorf("expected exactly the price tool and the none option, got %v", options)
 	}
+}
 
-	hasSearchTools := false
-	hasItemCatalog := false
-	for _, name := range toolNames {
-		if name == "search_tools" {
-			hasSearchTools = true
-		}
-		if name == "item_catalog.list_items" {
-			hasItemCatalog = true
-		}
-	}
+// recordingDecider records every question and answers the last option ("no tool"), which ends the turn.
+type recordingDecider struct{ questions []llm.Question }
 
-	if !hasSearchTools || !hasItemCatalog || len(toolNames) != 2 {
-		t.Errorf("expected exactly search_tools and item_catalog.list_items, got %v", toolNames)
+func (d *recordingDecider) Decide(_ *context.Context, q llm.Question) (llm.Decision, error) {
+	d.questions = append(d.questions, q)
+	return llm.Decision{Choice: len(q.Options) - 1, Confidence: 1}, nil
+}
+
+// testTexts are the words the agent requires; their content does not matter to these tests.
+func testTexts() agent.Texts {
+	return agent.Texts{
+		Speaker: "A staff member", Assistant: "an assistant", NoToolOption: "no tool", NoTool: "hello",
+		Refused: "refused", TooLong: "too long", Clarify: "clarify", Confirm: "confirm", Declined: "declined",
+		Failed: "failed", Yes: "yes", No: "no", Found: "found", WriterSystem: "writer", DataLabel: "data",
+		QuestionLabel: "question",
 	}
 }

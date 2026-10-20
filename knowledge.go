@@ -18,7 +18,7 @@ func (s *Store) SaveKnowledge(ctx *context.Context, sessionID, content, source s
 	if sessionID != "" {
 		tag = sessionTagPrefix + sessionID
 	}
-	nowStr := fmt.Sprintf("%d", time.Now()/1_000_000_000)
+	nowStr := fmt.Sprintf("%d", int64(time.NowUnix())) // the meta is text: the date is written as its seconds
 	meta := fmt.Sprintf("%d:%s,%d:%s,", len(source), source, len(nowStr), nowStr)
 	_, err := s.vdb.Add(ctx, vectordb.Doc{Text: content, Meta: meta, Tags: []string{tag}})
 	if err != nil {
@@ -97,7 +97,7 @@ func mergeMatchesByScore(a, b []knowledgeMatch, limit int) []knowledgeMatch {
 	return combined
 }
 
-func parseKnowledgeMeta(meta string) (string, int64) {
+func parseKnowledgeMeta(meta string) (string, time.Unix) {
 	if meta == "" {
 		return "", 0
 	}
@@ -109,10 +109,10 @@ func parseKnowledgeMeta(meta string) (string, int64) {
 	if err != nil {
 		return source, 0
 	}
-	var createdAt int64
+	var createdAt time.Unix
 	for _, d := range []byte(createdAtStr) {
 		if d >= '0' && d <= '9' {
-			createdAt = createdAt*10 + int64(d-'0')
+			createdAt = createdAt*10 + time.Unix(d-'0')
 		}
 	}
 	return source, createdAt

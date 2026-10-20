@@ -18,7 +18,7 @@ func (s *Store) LogToolCall(ctx *context.Context, sessionID, toolName, inputJSON
 		OutputText: outputText,
 		ErrText:    errText,
 		DurationMs: durationMS,
-		CreatedAt:  time.Now() / 1_000_000_000,
+		CreatedAt:  time.NowUnix(),
 	}
 	return s.db.Create(t)
 }
