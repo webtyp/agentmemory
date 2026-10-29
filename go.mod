@@ -27,5 +27,5 @@ require (
 	webtyp.com/filepath v0.1.0 // indirect
 	webtyp.com/json v0.5.37 // indirect
 	webtyp.com/mcp v0.3.4 // indirect
-	webtyp.com/router v0.4.15 // indirect
+	webtyp.com/router v0.4.16 // indirect
 )
