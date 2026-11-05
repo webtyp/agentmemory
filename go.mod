@@ -3,7 +3,7 @@ module webtyp.com/agentmemory
 go 1.26.8
 
 require (
-	webtyp.com/agent v1.1.13
+	webtyp.com/agent v1.1.14
 	webtyp.com/agentcontext v0.3.2
 	webtyp.com/context v0.0.23
 	webtyp.com/ddl v0.0.20
@@ -12,7 +12,7 @@ require (
 	webtyp.com/llm v0.2.0
 	webtyp.com/model v0.2.12
 	webtyp.com/orm v0.12.8
-	webtyp.com/storage v0.1.4
+	webtyp.com/storage v0.1.18
 	webtyp.com/time v0.6.2
 	webtyp.com/unixid v0.3.1
 	webtyp.com/vector v0.1.1
