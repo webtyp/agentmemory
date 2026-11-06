@@ -6,7 +6,7 @@ require (
 	webtyp.com/agent v1.1.14
 	webtyp.com/agentcontext v0.3.2
 	webtyp.com/context v0.0.23
-	webtyp.com/ddl v0.0.20
+	webtyp.com/ddl v0.0.46
 	webtyp.com/embed v0.4.0
 	webtyp.com/fmt v1.0.0
 	webtyp.com/llm v0.2.0
