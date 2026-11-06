@@ -11,7 +11,7 @@ require (
 	webtyp.com/fmt v1.0.0
 	webtyp.com/llm v0.2.0
 	webtyp.com/model v0.2.12
-	webtyp.com/orm v0.12.8
+	webtyp.com/orm v0.12.26
 	webtyp.com/storage v0.1.18
 	webtyp.com/time v0.6.2
 	webtyp.com/unixid v0.3.1
