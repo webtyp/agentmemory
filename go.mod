@@ -10,7 +10,7 @@ require (
 	webtyp.com/embed v0.4.0
 	webtyp.com/fmt v1.0.0
 	webtyp.com/llm v0.2.0
-	webtyp.com/model v0.2.12
+	webtyp.com/model v0.2.15
 	webtyp.com/orm v0.12.26
 	webtyp.com/storage v0.1.18
 	webtyp.com/time v0.6.2
