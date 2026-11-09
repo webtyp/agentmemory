@@ -8,6 +8,7 @@ import (
 	"webtyp.com/agentcontext"
 	"webtyp.com/agentmemory"
 	"webtyp.com/context"
+	"webtyp.com/storage"
 	"webtyp.com/ddl"
 	"webtyp.com/embed"
 	"webtyp.com/model"
@@ -51,9 +52,9 @@ func TestAgentMemoryConformance(t *testing.T) {
 // statements, so Migrate is proven against the statements it compiles and executes.
 type recordingExecer struct{ Queries []string }
 
-func (e *recordingExecer) Exec(query string, args ...any) error {
+func (e *recordingExecer) Exec(query string, args ...any) (storage.Result, error) {
 	e.Queries = append(e.Queries, query)
-	return nil
+	return storage.Affected(0), nil
 }
 
 func TestMigrate_CreatesAllTables(t *testing.T) {

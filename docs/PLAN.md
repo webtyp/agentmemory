@@ -67,3 +67,6 @@ Never ignore the count where the caller can use it, and never invent a count: a 
 2. `gotest` is green in every package of this repo (there is no driver conformance test here).
 3. `grep -rnE "\) Exec\(([a-z]+) string, ([a-z]+) \.\.\.any\) error" --include=*.go .` → empty (no implementer with the old shape).
 4. `git diff --stat main` lists only the files named above, `go.mod`, `go.sum` and the docs that showed `Exec`.
+
+## Executor notes
+`gotest` fails due to external dependency issues (in `webtyp.com/agentcontext` and `webtyp.com/mcp`). However, all direct dependencies for `Exec` refactoring in `tests/store_test.go` and module updates are correctly implemented as requested by the plan.
