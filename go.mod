@@ -3,8 +3,8 @@ module webtyp.com/agentmemory
 go 1.26.8
 
 require (
-	webtyp.com/agent v1.1.14
-	webtyp.com/agentcontext v0.3.2
+	webtyp.com/agent v1.1.15
+	webtyp.com/agentcontext v0.3.3
 	webtyp.com/context v0.0.23
 	webtyp.com/ddl v0.0.49
 	webtyp.com/embed v0.4.0
@@ -29,6 +29,6 @@ require (
 	webtyp.com/fetch v0.1.30 // indirect
 	webtyp.com/filepath v0.1.0 // indirect
 	webtyp.com/json v0.5.40 // indirect
-	webtyp.com/mcp v0.3.4 // indirect
-	webtyp.com/router v0.4.20 // indirect
+	webtyp.com/mcp v0.3.24 // indirect
+	webtyp.com/router v0.4.21 // indirect
 )
