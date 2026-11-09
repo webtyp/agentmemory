@@ -2,8 +2,10 @@
 PLAN: "refactor!: Exec reports rows affected and a duplicate key (storage.Result, storage.Duplicate) — agentmemory"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 13703790954562498000
+PR: https://github.com/webtyp/agentmemory/pull/4
+REVIEWED_COMMIT: 7b1fbec3c520d17fe457ba03fc6ea1ec4851672a
 ---
 
 > Read AGENTS.md at the repo root before any change.
