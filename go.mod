@@ -12,7 +12,7 @@ require (
 	webtyp.com/llm v0.2.0
 	webtyp.com/model v0.2.21
 	webtyp.com/orm v0.12.30
-	webtyp.com/storage v0.2.1
+	webtyp.com/storage v0.2.3
 	webtyp.com/time v0.6.4
 	webtyp.com/unixid v0.3.1
 	webtyp.com/vector v0.1.1
