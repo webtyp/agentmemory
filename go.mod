@@ -10,7 +10,7 @@ require (
 	webtyp.com/embed v0.4.0
 	webtyp.com/fmt v1.0.0
 	webtyp.com/llm v0.2.0
-	webtyp.com/model v0.2.19
+	webtyp.com/model v0.2.20
 	webtyp.com/orm v0.12.30
 	webtyp.com/storage v0.2.1
 	webtyp.com/time v0.6.4
@@ -22,13 +22,13 @@ require (
 require (
 	webtyp.com/base64 v0.0.6 // indirect
 	webtyp.com/calendar v0.1.0 // indirect
-	webtyp.com/crud v0.0.11 // indirect
+	webtyp.com/crud v0.0.15 // indirect
 	webtyp.com/definitioncheck v0.0.3 // indirect
 	webtyp.com/escape v0.1.0 // indirect
 	webtyp.com/events v0.1.8 // indirect
 	webtyp.com/fetch v0.1.30 // indirect
 	webtyp.com/filepath v0.1.0 // indirect
 	webtyp.com/json v0.5.40 // indirect
-	webtyp.com/mcp v0.3.24 // indirect
-	webtyp.com/router v0.4.21 // indirect
+	webtyp.com/mcp v0.3.28 // indirect
+	webtyp.com/router v0.5.0 // indirect
 )
